@@ -1,0 +1,149 @@
+version: "3"
+
+services:
+  database.postgres:
+    image: postgres:alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=ttrss # please change the password
+    volumes:
+      - ./postgres/data/:/var/lib/postgresql/data # persist postgres data to ~/postgres/data/ on the host
+    networks:
+      - ttrss-network
+    restart: always
+
+  service.rss:
+    image: wangqiru/ttrss:latest
+    container_name: ttrss
+    expose:
+      - 80
+    environment:
+      - SELF_URL_PATH=http://j8utig4rtgh6ckxhh4.onion # please change to your own domain
+      - DB_HOST=database.postgres
+      - DB_PORT=5432
+      - DB_NAME=ttrss
+      - DB_USER=postgres
+      - DB_PASS=ttrss # please change the password
+      - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
+    stdin_open: true
+    tty: true
+    restart: always
+    networks:
+      - ttrss-network
+    command: sh -c 'sh /wait-for.sh $$DB_HOST:$$DB_PORT -- php /configure-db.php && exec s6-svscan /etc/s6/'
+
+  service.mercury: # set Mercury Parser API endpoint to `service.mercury:3000` on TTRSS plugin setting page
+    image: wangqiru/mercury-parser-api:latest
+    container_name: mercury
+    expose:
+      - 3000
+    networks:
+      - ttrss-network
+    restart: always
+
+  rss-bridge:
+    image: rssbridge/rss-bridge:latest
+    container_name: rssbridge
+    volumes:
+      - ./whitelist.txt:/app/whitelist.txt
+    expose:
+      - 80
+    networks:
+      - ttrss-network
+    privileged: true
+    restart: always
+
+  ttrsstor:
+    image: strm/tor
+    container_name: ttrsstor
+    restart: always
+    depends_on:
+      - service.rss
+    networks:
+      - ttrss-network
+    environment:
+      LISTEN_PORT: "80"
+      REDIRECT: "ttrss:80"
+      PRIVATE_KEY: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIICXQIBAAKBgQDzBAiMOwcVGYcGzRTOf/YQhnFO2xjwlbAJ1JrZYiKFVcIgTUWb
+        hscKezpbQMNG0K/ljuuD98OvuxdzMsO5NSjyu98uypYvfGddYkvib1Rk7eyj2EzJ
+        1BIw4pU9d1asX566uzIFW8FMOTzinbp1Z/oHfyLwujZ/88PhZ8qZr6o+0QIDAQAB
+        AoGABt4KT8wrOxFpm2uYNu2uynDCKvROFB5mxyBW7+WyDAqMXdVRLj/0x/sLfyCp
+        ZArprZcIWMZbpU+oLf01QrqZ2ZQUtcvpBHE1TNLGlI9KU2kmqTzpl658R1nqFyCb
+        AJWa28WsIrfcd5ebEaRFxUROzTmXwbRlXFzFRh/XmOfg9kECQQD5qgeYOzR2aTdw
+        BSS2Vw4dpFfloCrRw2ipM8ac4kdLGCoYefQHwW2Kfdf9raVfPDP7vcxrs37sOgOh
+        wh8DRSEFAkEA+S7PwBDXVEQWc96ojSTHllfbvMuerPJ/W3lz0yghhoaN72Y6W40X
+        Pk81eo6eRTlPjUCvWesorFZ8RltQK9xAXQJBALkmaT9yGLP/z4dqMoxH7Esr7Nkm
+        qDIBm1/1m9kAZuMfuQ2B+ds/wVqMRB4cYI5BiN0dQIkEYdRYc/py/cDVEWkCQQCy
+        N5UzXsEzf73atXwMF63hgVFZFLhfSWH8jGE1svwDXn0YQWP88PVX34SrWQIDASsd
+        aMmI2eC4z/Ga+R9ZoTJdAkAo4rC2NtT0uD1On4Qf9w97ykr/o6JPBQPTpWSkq2NR
+        8rDZe3IwO47HsFpWYHgnQCrT3Gy6z3lC6z7u20Ib63jl
+        -----END RSA PRIVATE KEY-----
+        
+  politepol:
+    image: marlluslustosa/politepol:latest
+    container_name: politepol
+    environment:
+      DB_NAME: 'politepol'
+      DB_USER: 'rooooooooooot'
+      DB_PASSWORD: 'toooooooooooor' 
+      DB_HOST: 'dbpolitepol'
+      DB_PORT: '3306'
+      WEB_PORT: '8088'
+      TIME_ZONE: 'America\/Fortaleza' #change
+    depends_on:
+      - 'dbpolitepol'
+    command: ["./wait-for-it.sh", "dbpolitepol", "/bin/bash", "./frontend/start.sh"]
+    container_name: politepol
+    restart: always
+    networks:
+      - politepol-network
+    ports:
+      - '8088:8088'
+
+  dbpolitepol:
+    image: mysql:5.7
+    container_name: dbpolitepol
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'politepol'
+      MYSQL_USER: 'rooooooooooot'
+      MYSQL_PASSWORD: 'toooooooooooor'
+      MYSQL_ROOT_PASSWORD: 'rootpass'
+    networks:
+      - ttrss-network
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+ politepoltor:
+    image: strm/tor
+    container_name: politepoltor
+    restart: always
+    depends_on:
+      - politepol
+    networks:
+      - ttrss-network
+    environment:
+      LISTEN_PORT: "8088"
+      REDIRECT: "politepol:8088"
+      PRIVATE_KEY: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIICXAIBAAKBgQDwJNv4M3RfERvwphBfH0ncoIxaBFniEuaMrwlVCAVEtwDvlC7d
+        dW266oxMUYOVXPg0Qu8D1iFUAMpTsR/dH3o5/c3Sat24qIQ47bFseLhf48/dURXn
+        itmq2+qbffmc8ainXIvwzEdJuVd9gUoB5GGU6xXqppBMr/0m1W2YqxUtLQIDAQFv
+        AoGABJcks9TRHB9/ScK3CqfPpQnV8POJxspAj3Uha0NolP9JkGTwvIALCuPu7F+w
+        8JlUblj60BrKjh9f6SIe8i8uArdw7kUl7edvz9tdv0GZkPeZrwmaD+t8XuwiRK2Z
+        fVyZ0QIjSMNqZfbLhj1MHyDRfRPdTsLPbU34JTaS1Vy3D78CQQD9S0xMPXxap12u
+        kJ4yTnSiphC+rSSBbvYMawsqiWBA7UPSrwJBAKXSVQClxNUpJ2PZt91HZAtuipRt
+        FknIiqRRAkEA8rWZOcs1pmTG2kewO5Ek0f0UOMUl97AaZBQLQGpIZWO1cTKX0lPx
+        mglpyvvh5BY4wYXccobbhqbWjTKN6gOQHQJAb0Z1ugiXVrcPm6TSZzVbrVBq2fxR
+        D6rvgtLQ+9YsMFnqeVVA7ocMJq5O1U+oUPAGct37rTdQ7+WrSXshI+1+DwJAcgNR
+        5SN+L/kotdPehcGpkJOXLa6zoeG/dfhQ7KR0+yD7dz8A4Xml5fzoxc023UVA+1Je
+        st9CN0gjQxnFk2LwBwJBANPcRHHU1+6oeeJVzBcyL4tddCZ/7N3rR6/S4XePFUbA
+        VZwljLxstlx57+N74D0aj6wrJw+iBH2BI+b+ZpnLXyy7=
+        -----END RSA PRIVATE KEY-----
+
+networks:
+  ttrss-network:
+    driver: 'bridge'
