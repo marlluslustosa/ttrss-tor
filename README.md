@@ -141,12 +141,7 @@ version: "3"
         -----END RSA PRIVATE KEY-----
 ```
 
-## 4 - Create whitelist.txt file (RSS Bridge requisite) on folder. Put * if you want to enable all repositories.
-```shellsession
-$ echo "*" > whitelist.txt
-```
-
-## 5 - Additional Information 1
+## 4 - Additional Information 1
 By default, the ttrss database will be created inside the "./postgres/" (postgres container) folder and the politepol database will be written to "./mysql/" (dbpolitepol container).
 
 # Building
