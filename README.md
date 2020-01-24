@@ -4,6 +4,7 @@
 ## 1 - Download repository
 ``` shellsession
 $ git clone https://github.com/marlluslustosa/ttrss-tor
+$ cd ttrss-tor/
 ```
 
 
@@ -145,10 +146,19 @@ version: "3"
 $ echo "*" > whitelist.txt
 ```
 
-## 5 - Additional Information
+## 5 - Additional Information 1
 By default, the ttrss database will be created inside the "./postgres/" (postgres container) folder and the politepol database will be written to "./mysql/" (dbpolitepol container).
 
-## Building
+# Building
 ```shellsession
 $ docker-compose up -d
 ```
+## Access TTRSS 
+In the [Tor browser](https://www.torproject.org/download/), enter http://ttrswuvo75a7aqm35.onion (Domain Generated on step 2)
+
+## Using politepol
+In the [Tor browser](https://www.torproject.org/download/), enter http://poliwuvo75a7aqm35.onion:8088 (Domain Generated on step 2.1)
+
+### Additional Information 2
+- When adding a feed for rssbridge, just put "http://rssbridge/..." in the domain name (ex: http://rssbridge/?action=display&bridge=Instagram&u=fortaleza&media_type=all&format=Atom).
+- Likewise, when adding a feed related to politepol in the TTRSS, change the .onion domain to "http://politepol:8088/..." (ex: http://politepol:8088/feed/24)
