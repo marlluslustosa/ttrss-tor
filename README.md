@@ -37,7 +37,7 @@ VZwljLxstlx57+N74D0aj6wrJw+iBH2BI+b+ZpnLXyy7
 ``` shellsession
 $ docker run -it --rm --entrypoint shallot strm/tor-hiddenservice-nginx ^poli
 --------------------------------------------------------------
-Found matching domain after 5519 tries: poliwuvo75a7aqm35.onion
+Found matching domain after 5519 tries: poliwuvo75a7qmm20.onion
 --------------------------------------------------------------
 -----BEGIN RSA PRIVATE KEY-----
 MoJxsGotYx62ULxPqz0um7yEWOU6hUAy8MB3X3FcTCjGO0PPKpfJ2ntXo0Ajcp5c
@@ -157,7 +157,7 @@ $ docker-compose up -d
 In the [Tor browser](https://www.torproject.org/download/), enter http://ttrswuvo75a7aqm35.onion (Domain Generated on step 2)
 
 ## Using politepol
-In the [Tor browser](https://www.torproject.org/download/), enter http://poliwuvo75a7aqm35.onion:8088 (Domain Generated on step 2.1)
+In the [Tor browser](https://www.torproject.org/download/), enter http://poliwuvo75a7qmm20.onion:8088 (Domain Generated on step 2.1)
 
 ### Additional Information 2
 - When adding a feed for rssbridge, just put "http://rssbridge/..." in the domain name (ex: http://rssbridge/?action=display&bridge=Instagram&u=fortaleza&media_type=all&format=Atom).
