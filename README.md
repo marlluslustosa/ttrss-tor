@@ -1,5 +1,5 @@
 # All in one Tiny Tiny RSS solution Docker (over Tor) 
-Tiny Tiny RSS + Mercury + RSS Bridge + Politepol + Tor
+[Tiny Tiny RSS](https://github.com/HenryQW/Awesome-TTRSS) + [Mercury](https://www.github.com/HenryQW/mercury-parser-api) + [RSS Bridge](https://github.com/RSS-Bridge/rss-bridge) + [Politepol](https://github.com/taroved/pol) + [Tor](https://github.com/opsxcq/docker-tor)
 
 ## 1 - Download repository
 ``` shellsession
