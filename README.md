@@ -55,7 +55,7 @@ VZwljLxstlx57+N74D0aj6wrJw+iBH2BI+b+ZpnLXyy7
 -----END RSA PRIVATE KEY-----
 ```
 
-## Editing `docker-compose` file. Edit the environment variable "SELF_URL_PATH" for the onion domain generated in the previous step (2 - Generating onion domain (TTRSS)).
+## 3 - Editing `docker-compose` file. Edit the environment variable "SELF_URL_PATH" for the onion domain generated in the previous step (2 - Generating onion domain (TTRSS)).
 
 ```yml
 version: "3"
@@ -80,7 +80,7 @@ version: "3"
       - ttrss-network
     command: sh -c 'sh /wait-for.sh $$DB_HOST:$$DB_PORT -- php /configure-db.php && exec s6-svscan /etc/s6/'
 ```
-## Editing `docker-compose` file. Edit the "PRIVATE_KEY" environment variable for the primordial keys generated in the previous step (TTRSS and Politepol).
+## 3.1 Editing `docker-compose` file. Edit the "PRIVATE_KEY" environment variable for the private keys generated in the previous step 2.
 
 ```yml
   ttrsstor:
@@ -140,3 +140,15 @@ version: "3"
         -----END RSA PRIVATE KEY-----
 ```
 
+## 4 - Create whitelist.txt file (RSS Bridge requisite) on folder. Put * if you want to enable all repositories.
+```shellsession
+$ echo "*" > whitelist.txt
+```
+
+## 5 - Additional Information
+By default, the ttrss database will be created inside the "./postgres/" (postgres container) folder and the politepol database will be written to "./mysql/" (dbpolitepol container).
+
+## Building
+```shellsession
+$ docker-compose up -d
+```
