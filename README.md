@@ -141,7 +141,7 @@ version: "3"
         -----END RSA PRIVATE KEY-----
 ```
 
-## 4 - Additional Information 1
+## Additional Information 1
 By default, the ttrss database will be created inside the "./postgres/" (postgres container) folder and the politepol database will be written to "./mysql/" (dbpolitepol container).
 
 # Building
@@ -154,6 +154,6 @@ In the [Tor browser](https://www.torproject.org/download/), enter http://ttrswuv
 ## Using politepol
 In the [Tor browser](https://www.torproject.org/download/), enter http://poliwuvo75a7qmm20.onion:8088 (Domain Generated on step 2.1)
 
-### Additional Information 2
+## Additional Information 2
 - When adding a feed for rssbridge, just put "http://rssbridge/..." in the domain name (ex: http://rssbridge/?action=display&bridge=Instagram&u=fortaleza&media_type=all&format=Atom).
 - Likewise, when adding a feed related to politepol in the TTRSS, change the .onion domain to "http://politepol:8088/..." (ex: http://politepol:8088/feed/24)
