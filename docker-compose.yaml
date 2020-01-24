@@ -98,7 +98,7 @@ services:
     container_name: politepol
     restart: always
     networks:
-      - politepol-network
+      - ttrss-network
     ports:
       - '8088:8088'
 
